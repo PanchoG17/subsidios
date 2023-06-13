@@ -1,0 +1,234 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{title}} {% endblock %}
+
+<!-- Specific Plugin CSS goes HERE -->
+{% block plugin_stylesheets %}
+
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/static/assets/vendors/jvectormap/jquery-jvectormap.css">
+  <link rel="stylesheet" href="/static/assets/vendors/flag-icon-css/css/flag-icon.min.css">
+  <link rel="stylesheet" href="/static/assets/vendors/owl-carousel-2/owl.carousel.min.css">
+  <link rel="stylesheet" href="/static/assets/vendors/owl-carousel-2/owl.theme.default.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/data-tables/css/datatables.min.css" >
+
+
+{% endblock plugin_stylesheets %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+  <div class="content-wrapper">
+
+    <div class="text-center mb-4 d-md-flex justify-content-center">
+      <h2>Beneficiario:</h2>
+      <h2>&nbsp;{{request.user.first_name}} {{request.user.last_name}}</h2>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-4 grid-margin">
+        <div class="card">
+          <div class="card-header py-4">
+            <h4 class="text-center">Asignación actual</h4>
+          </div>
+          <div class="card-body py-3">
+            <div class="row">
+              <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                <div class="d-flex flex-row align-items-center">
+                  <h2 class="mb-0 mx-sm-auto mx-xl-0" id="asignacion">{{asignacion}} KG</h2>
+                </div>
+              </div>
+              <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                <i class="icon-lg mdi mdi-arrow-up-bold-circle text-success ml-auto"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 grid-margin">
+        <div class="card">
+          <div class="card-header py-4">
+            <h4 class="text-center">Kilogramos descargados</h4>
+          </div>
+          <div class="card-body py-3">
+            <div class="row">
+              <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                <div class="d-flex flex-row align-items-center">
+                  <h2 class="mb-0 mx-sm-auto mx-xl-0" id="descargas">{% if descargas %}{{descargas}} KG{% else %}Sin descargas{% endif %}</h2>
+                </div>
+              </div>
+              <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                <i class="icon-lg mdi mdi-arrow-down-bold-circle text-danger ml-auto"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 grid-margin">
+        <div class="card">
+          <div class="card-header py-4">
+            <h4 class="text-center">Saldo</h4>
+          </div>
+          <div class="card-body py-3">
+            <div class="row">
+              <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                <div class="d-flex flex-row align-items-center">
+                  <h2 class="mb-0 mx-sm-auto mx-xl-0" id="descargas">{% if saldo %}{{saldo.saldo}}{% else %}0{% endif %} KG</h2>
+                </div>
+              </div>
+              <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                <i class="icon-lg mdi mdi-star-circle text-primary ml-auto"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5 pt-5" id="actual-spinner">
+      <span class="spinner-border" style="width: 6rem; height: 6rem;" role="status" aria-hidden="true"></span>
+    </div>
+
+    <h3 class="text-left">Operaciones realizadas en el mes:</h3>
+
+    <div class="actual-table-js" style="display:none">
+      <table id="actual-table" class="table text-center border border-primary">
+          <thead class="bg-primary">
+            {% if actual %}
+              <tr>
+                  <th class="text-center text-white">DNI</th>
+                  <th class="text-center text-white">Localidad</th>
+                  <th class="text-center text-white">Fecha de transacción</th>
+                  <th class="text-center text-white">Periodo</th>
+                  <th class="text-center text-white">Operación</th>
+                  <th class="text-center text-white">Cantidad</th>
+                  <th class="text-center text-white">Envase</th>
+                  <th class="text-center text-white">Comercio</th>
+              </tr>
+            {% else %}
+              <tr><th></th></tr>
+            {% endif %}
+          </thead>
+          <tbody>
+              {% for a in actual %}
+                  <tr>
+                      {% for k,v in a.items %}
+                          <td>{{v}}</td>
+                      {% endfor %}
+                  </tr>
+              {% empty %}
+                  <tr><td class="text-center py-5 my-5">Sin resultados</td></tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+
+    <div class="text-center mt-5 pt-5" id="anterior-spinner">
+      <span class="spinner-border" style="width: 6rem; height: 6rem;" role="status" aria-hidden="true"></span>
+    </div>
+
+    <div class="my-5">
+      <h3 class="text-left">Operaciones realizadas el mes pasado:</h3>
+      <div class="anterior-table-js" style="display:none">
+        <table id="anterior-table" class="table text-center border border-primary">
+            <thead class="bg-primary">
+              {% if anterior %}
+                <tr>
+                    <th class="text-center text-white">DNI</th>
+                    <th class="text-center text-white">Localidad</th>
+                    <th class="text-center text-white">Fecha de transacción</th>
+                    <th class="text-center text-white">Periodo</th>
+                    <th class="text-center text-white">Operación</th>
+                    <th class="text-center text-white">Cantidad</th>
+                    <th class="text-center text-white">Envase</th>
+                    <th class="text-center text-white">Comercio</th>
+                </tr>
+              {% else %}
+                <tr><th class="text-white">Mes pasado</th></tr>
+              {% endif %}
+            </thead>
+            <tbody>
+                {% for a in anterior %}
+                    <tr>
+                        {% for k,v in a.items %}
+                            <td>{{v}}</td>
+                        {% endfor %}
+                    </tr>
+                {% empty %}
+                    <tr><td class="text-center py-5 my-5">Sin resultados</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+<!-- Specific Plugin JS goes HERE  -->
+{% block plugin_javascripts %}
+
+  <script src="/static/assets/vendors/chart.js/Chart.min.js"></script>
+  <script src="/static/assets/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="/static/assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/static/assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="/static/assets/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+  <script src="/static/assets/plugins/data-tables/js/datatables.min.js"></script>
+
+{% endblock plugin_javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="/static/assets/js/dashboard.js"></script>
+
+  <script>
+    $(document).ready(function () {
+
+      // MES ACTUAL TABLE
+      {% if actual %}
+        try{
+            $('#actual-table').DataTable({
+                    responsive: true,
+                    autoWidth: false,
+                    'dom': 't',
+                    initComplete: function(settings, json) {
+                        $('#actual-spinner').hide();
+                        $('.actual-table-js').show();
+                    }
+                }
+            );
+        }
+        catch(err){
+          console.log(err);
+        }
+      {% endif %}
+
+      // MES ANTERIOR TABLE
+      {% if anterior %}
+        try{
+          $('#anterior-table').DataTable({
+                  responsive: true,
+                  autoWidth: false,
+                  'dom': 't',
+                  initComplete: function(settings, json) {
+                      $('#anterior-spinner').hide();
+                      $('.anterior-table-js').show();
+                  }
+              }
+          );
+        }
+        catch(err){
+          console.log(err);
+        }
+      {% endif %}
+
+      $('#actual-spinner').hide();
+      $('.actual-table-js').show();
+      $('#anterior-spinner').hide();
+      $('.anterior-table-js').show();
+
+  });
+  </script>
+
+{% endblock javascripts %}

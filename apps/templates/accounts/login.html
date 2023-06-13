@@ -1,0 +1,70 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} {{title}} {% endblock %}
+
+<!-- Specific Plugin CSS goes HERE -->
+{% block plugin_stylesheets %}{% endblock plugin_stylesheets %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="row w-100 m-0">
+        <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+          <div class="card col-lg-4 mx-auto px-0">
+            <div class="card-header bg-dark">
+              <h3 class="text-center my-4"> {{title|default:"Iniciar sesión"}} </h3>
+            </div>
+            <div class="card-body px-5 py-5">
+
+              {% if form %}
+
+                <div class="text-center pb-2">{{ msg | safe }}</div>
+
+                <form role="form" method="post" action="" class="my-3">
+
+                  {% csrf_token %}
+                  <div class="form-group">
+                    {% if 'beneficiario' in request.path %}
+                      <label>Documento</label>
+                    {% else %}
+                      <label>Usuario</label>
+                    {% endif %}
+                    {{ form.username }}
+                  </div>
+                  <div class="form-group">
+                    <label>Contraseña</label>
+                    {{ form.password1 }}
+                  </div>
+                  <div class="text-center pt-3">
+                    <button type="submit" name="login" class="btn btn-primary btn-block py-3">Ingresar</button>
+                    {% if 'beneficiario' in request.path %}
+                      <a href="{% url 'register_beneficiario' %}" class="btn btn-success btn-block py-3">Registrarse</a>
+                    {% endif %}
+                    <a href="{% url 'login' %}" class="btn btn-danger btn-block py-3">Volver</a>
+
+                  </div>
+                </form>
+
+              {% else %}
+                <div class="row justify-content-between my-2">
+                  <a class="btn btn-primary p-3 mx-auto my-2" href="{% url 'login_agente' %}">Ingreso Agentes</a>
+                  <a class="btn btn-primary p-3 mx-auto my-2" href="{% url 'login_beneficiario' %}">Ingreso Beneficiarios</a>
+                </div>
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Plugin JS goes HERE  -->
+{% block plugin_javascripts %}{% endblock plugin_javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

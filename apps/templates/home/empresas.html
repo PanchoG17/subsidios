@@ -1,0 +1,127 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{title}} {% endblock %}
+
+<!-- Specific Plugin CSS goes HERE -->
+{% block plugin_stylesheets %}
+
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/static/assets/vendors/jvectormap/jquery-jvectormap.css">
+  <link rel="stylesheet" href="/static/assets/vendors/flag-icon-css/css/flag-icon.min.css">
+  <link rel="stylesheet" href="/static/assets/vendors/owl-carousel-2/owl.carousel.min.css">
+  <link rel="stylesheet" href="/static/assets/vendors/owl-carousel-2/owl.theme.default.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/data-tables/css/datatables.min.css" >
+  <link rel="stylesheet" href="/static/assets/plugins/font-awesome/css/all.min.css" >
+
+{% endblock plugin_stylesheets %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+
+        <div class="page-header">
+            <div class="d-block d-md-flex justify-content-between flex-1">
+                <h2 class="page-title text-center my-2 my-md-auto"> {{title}} </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'otras_consultas' %}">Otras consultas</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 pt-5" id="spinner">
+            <span class="spinner-border" style="width: 6rem; height: 6rem;" role="status" aria-hidden="true"></span>
+        </div>
+
+        <div class="card" style="display:none">
+            <div class="card-body table-js">
+                <table id="padron-table" class="table text-center border border-primary">
+                    <thead class="bg-primary">
+                        {% if descargas %}
+                            <tr>
+                                <th class="text-center text-white">Localidad</th>
+                                <th class="text-center text-white">Empresa</th>
+                                <th class="col-1 text-white">Kilogramos descargados</th>
+                            </tr>
+                        {% else %}
+                            <tr><th class="text-white">{{title}}</th></tr>
+                        {% endif %}
+                    </thead>
+                    <tbody>
+                        {% for d in descargas %}
+                            </tr>
+                                <td>{{d.conimpcubloc}}</td>
+                                <td>{{d.conimpcubcomnom}}</td>
+                                <td>{{d.kilos|floatformat:"g"}} KG</td>
+                            </tr>
+                        {% empty %}
+                            </tr><td class="text-center py-5 my-5">Sin resultados</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{% url 'otras_consultas' %}" class="btn btn-primary mt-4 px-4 py-2"><i class="my-auto mdi mdi-keyboard-backspace"></i>Volver</a>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Plugin JS goes HERE  -->
+{% block plugin_javascripts %}
+
+  <script src="/static/assets/vendors/chart.js/Chart.min.js"></script>
+  <script src="/static/assets/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="/static/assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/static/assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="/static/assets/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+  <script src="/static/assets/plugins/data-tables/js/datatables.min.js"></script>
+
+
+{% endblock plugin_javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="/static/assets/js/dashboard.js"></script>
+
+  <script>
+    $(document).ready(function () {
+
+        {% if descargas %}
+            try{
+                $('#padron-table').DataTable({
+                        responsive: true,
+                        autoWidth: false,
+                        dom: '<"row"<"col-sm-12"t>>',
+                        initComplete: function(settings, json) {
+                            $('#spinner').hide();
+                            $('.card').show();
+                        },
+                        "ordering": false
+                    }
+                );
+            }
+            catch(err){
+                $('#spinner').hide();
+                $('.card').show();
+            }
+
+        {% else %}
+            $('.result').html('No se encontraron saldos en el periodo actual')
+            $('#spinner').hide();
+            $('.card').show();
+        {% endif %}
+    });
+  </script>
+
+{% endblock javascripts %}

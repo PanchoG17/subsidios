@@ -1,0 +1,51 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{title}} {% endblock %}
+
+<!-- Specific Plugin CSS goes HERE -->
+{% block plugin_stylesheets %}{% endblock plugin_stylesheets %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="content-wrapper">
+
+        <div class="page-header">
+            <div class="d-block d-md-flex justify-content-between flex-1">
+                <h2 class="page-title text-center my-2 my-md-auto"> {{title}} </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <h1 class="text-center"> Agente: {{request.user.get_full_name}} </h1>
+        <div class="my-5">
+            <div class="form-row justify-content-around">
+                <a href="{% url 'beneficiarios_envase' %}" class="text-decoration-none col-10 col-sm-3 my-2"><button type="button" class="form-control">Beneficiarios por envase</button></a>
+                <a href="{% url 'beneficiarios_localidad' %}" class="text-decoration-none col-10 col-sm-3 my-2"><button type="button" class="form-control">Beneficiarios por ciudad</button></a>
+                <a href="{% url 'beneficiarios_barrio' %}" class="text-decoration-none col-10 col-sm-3 my-2"><button type="button" class="form-control">Beneficiarios por barrio</button></a>
+            </div>
+            <div class="form-row justify-content-around">
+                <a href="{% url 'grupo_familiar' %}" class="text-decoration-none col-10 col-sm-3 my-2"><button type="button" class="form-control">Grupos familiares</button></a>
+                <a href="{% url 'cantidad_envases' %}" class="text-decoration-none col-10 col-sm-3 my-2"><button type="button" class="form-control">Envases asignados</button></a>
+                <a href="{% url 'descargas_empresas' %}" class="text-decoration-none col-10 col-sm-3 my-2"><button type="button" class="form-control">Descargas por empresa</button></a>
+            </div>
+        </div>
+        <div class="text-center">
+            <a href="/" class="btn btn-primary mt-4 px-4 py-2"><i class="my-auto mdi mdi-keyboard-backspace"></i>Inicio</a>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Plugin JS goes HERE  -->
+{% block plugin_javascripts %}{% endblock plugin_javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

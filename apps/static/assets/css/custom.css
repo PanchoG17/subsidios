@@ -1,0 +1,105 @@
+.row{
+    align-items: center;
+}
+
+.login-bg{
+    height: 100%;
+}
+
+.input-lg{
+    height: 7vh!important;
+    font-size: large;
+}
+.input-lg::placeholder{
+    font-size: large;
+}
+.flex-1{
+    flex: 1;
+}
+
+.page-header{
+    background-color: #191c24;
+}
+.page-header h2{
+    margin-left: 1rem;
+}
+
+.card-header h4{
+    line-height: auto;
+    margin-bottom: 0;
+}
+
+.errorlist li{
+    color: #fc424a !important;
+    font-size: small!important;
+    list-style: none!important;
+}
+.errorlist{
+    padding-left: 0.5rem!important;
+}
+.mdi-menu::before{
+    padding-top: 5px!important;
+    font-size: xx-large!important;
+}
+
+.logo-tdf{
+    border-radius: 5px;
+    width: 40px!important;
+    height: 40px!important;
+}
+.logo-somos img{
+    border-radius: 5px;
+    height: unset!important;
+}
+
+.menu-icon i{
+    font-size: 1.3rem!important;
+}
+
+.sidebar .nav-item{
+    padding-right: 0!important;
+}
+.menu-items > .nav-link{
+    padding-left: 10px!important;
+}
+.sub-menu .nav-link{
+    padding: 10px!important;
+}
+
+/* Table */
+#padron-table th::before,th::after{
+    padding-left: 5px!important;
+}
+
+.table-js tbody{
+    background-color: #000!important;
+}
+
+.i-lg{
+    font-size: x-large!important;
+}
+.buttons{
+    margin: 1rem 0;
+    justify-content: center;
+}
+
+.buttons button{
+    color: white;
+    background-color: var(--primary);
+}
+
+@media (max-width: 762px) {
+    .direccion-sm .dtr-data{
+        font-size: x-small!important;
+    }
+}
+
+
+.sidebar-icon-only .menu-items .nav-link{
+    padding-left: 20px!important;
+}
+
+.mdi-keyboard-backspace::before{
+    vertical-align: bottom;
+}
+

@@ -1,0 +1,73 @@
+      {% load tags %}
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+          <a class="sidebar-brand brand-logo logo-somos" href="/"><img src="/static/assets/images/institucional/somos.png" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo-mini pl-3" href="/"><img src="/static/assets/images/institucional/escudo.png" alt="logo" class="logo-tdf"/></a>
+        </div>
+        <ul class="nav">
+          <li class="nav-item profile">
+            <div class="profile-desc">
+              <div class="profile-pic">
+                <div class="count-indicator">
+                  <img class="img-xs rounded-circle " src="/static/assets/images/user.png" alt="">
+                </div>
+                <div class="profile-name">
+                  <h6 class="mb-0 font-weight-normal">
+                    {{ request.user.first_name }} {{request.user.last_name}}
+                  </h6>
+                  <span>
+                    {{ request.user.email }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item nav-category">
+            <span class="nav-link">Navegación</span>
+          </li>
+
+          {% if request.user|has_group:"Beneficiarios" %}
+            <li class="nav-item menu-items">
+              <a class="nav-link" href="{% url 'consultas' %}">
+                <span class="menu-icon">
+                  <i class="mdi mdi-account-search"></i>
+                </span>
+                <span class="menu-title">Consultas</span>
+              </a>
+            </li>
+          {% else %}
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#padrones" aria-expanded="false" aria-controls="padrones">
+                <span class="menu-icon">
+                  <i class="mdi mdi-account-multiple-outline"></i>
+                </span>
+                <span class="menu-title">Padrón beneficiarios</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="padrones">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'padron_activos' %}">Activos</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'padron_inactivos' %}">Activos sin descargas</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item menu-items">
+              <a class="nav-link" href="{% url 'consultas' %}">
+                <span class="menu-icon">
+                  <i class="mdi mdi-account-search"></i>
+                </span>
+                <span class="menu-title">Consultar DNI</span>
+              </a>
+            </li>
+            <li class="nav-item menu-items">
+              <a class="nav-link" href="{% url 'otras_consultas' %}">
+                <span class="menu-icon">
+                  <i class="mdi mdi-account-search"></i>
+                </span>
+                <span class="menu-title">Otras consultas</span>
+              </a>
+            </li>
+          {% endif %}
+
+        </ul>
+      </nav>

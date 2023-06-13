@@ -1,0 +1,66 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} {{title}} {% endblock %}
+
+<!-- Specific Plugin CSS goes HERE -->
+{% block plugin_stylesheets %}{% endblock plugin_stylesheets %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="container-fluid page-body-wrapper full-page-wrapper">
+    <div class="row w-100 m-0">
+      <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg px-0">
+        <div class="card col-xl-5 col-lg-5 col-md-6 col-sm-8 col-11 mx-auto">
+          <div class="card-body px-2 py-5">
+
+            <h3 class="card-title text-center mb-3"> Registro beneficiarios </h3>
+            <div class="my-4"> {{ msg | safe }} </div>
+            <form role="form" method="post" action="">
+              {% csrf_token %}
+              <div class="form-group">
+                <label>Documento</label>
+                {{ form.username }}
+              </div>
+              <span class="text-error">{{ form.username.errors }}</span>
+
+              <div class="form-group">
+                <label>Email</label>
+                {{ form.email }}
+              </div>
+              <span class="text-error">{{ form.email.errors }}</span>
+
+              <div class="form-group">
+                <label>Contraseña</label>
+                {{ form.password1 }}
+              </div>
+              <span class="text-error">{{ form.password1.errors }}</span>
+
+              <div class="form-group">
+                <label>Repetir contraseña</label>
+                {{ form.password2 }}
+              </div>
+              <span class="text-error">{{ form.password2.errors }}</span>
+
+              <div class="text-center">
+                <button type="submit" name="register" class="btn btn-primary btn-block enter-btn">Registrar</button>
+              </div>
+              <a href="{% url 'login' %}" class="btn btn-danger btn-block py-3">Volver</a>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Plugin JS goes HERE  -->
+{% block plugin_javascripts %}{% endblock plugin_javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

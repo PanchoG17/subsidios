@@ -1,0 +1,204 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{title}} {% endblock %}
+
+<!-- Specific Plugin CSS goes HERE -->
+{% block plugin_stylesheets %}
+
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/static/assets/vendors/jvectormap/jquery-jvectormap.css">
+  <link rel="stylesheet" href="/static/assets/vendors/flag-icon-css/css/flag-icon.min.css">
+  <link rel="stylesheet" href="/static/assets/vendors/owl-carousel-2/owl.carousel.min.css">
+  <link rel="stylesheet" href="/static/assets/vendors/owl-carousel-2/owl.theme.default.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/data-tables/css/datatables.min.css" >
+  <link rel="stylesheet" href="/static/assets/plugins/font-awesome/css/all.min.css" >
+
+{% endblock plugin_stylesheets %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+    <div class="content-wrapper">
+        <div class="page-header">
+            <div class="d-block d-md-flex justify-content-between flex-1">
+                <h2 class="page-title text-center my-2 my-md-auto"> {{title}} {% if envase %} : {{envase}}{% endif %} </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        {% if 'Beneficiarios' in title %}
+                            <li class="breadcrumb-item"><a href="{% url 'otras_consultas' %}">Otras consultas</a></li>
+                            <li class="breadcrumb-item" aria-current="page"><a href="{% url url %}">{{title}}</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{detalle}}</li>
+                        {% else %}
+                            <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+                        {% endif %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="card">
+            {% if 'sin descargas' in title %}
+                <div class="card-header text-center">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="documento" value="{{documento}}">
+
+                        <label>Buscar beneficiarios sin descargas:</label>
+                        <div class="row col-8 mx-auto">
+                            <div class="col-sm-12 col-md-10 mt-2 mt-md-0">
+                                <input type="text" placeholder="Desde" required name="desde" class="form-control input-mes" max="{% now "Y-m" %}" id="fecha_desde">
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-2 mt-md-0 mx-auto">
+                                <input type="submit" class="btn btn-success" value="Buscar">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+            <div class="card-body table-js" style="display:none">
+                <table id="padron-table" class="table text-center border border-primary">
+                    <thead class="bg-primary">
+                        {% if padron %}
+                            <tr>
+                                <th class="text-center text-white" data-priority="2">Apellido</th>
+                                <th class="text-center text-white" data-priority="3">Nombre</th>
+                                <th class="text-center text-white" data-priority="4">DNI</th>
+                                <th class="text-center text-white" data-priority="5">Localidad</th>
+                                <th class="text-center text-white" data-priority="8">Barrio</th>
+                                <th class="text-center text-white" data-priority="10">Direccion</th>
+                                <th class="text-center text-white" data-priority="6">Cod. área</th>
+                                <th class="text-center text-white" data-priority="7">Celular</th>
+                                <th class="text-center text-white" data-priority="9">Ultima modificación</th>
+                                <th class="text-center text-white" data-priority="1">Consultar</th>
+                            </tr>
+                        {% else %}
+                            <tr><th class="text-white">{{title}}</th></tr>
+                        {% endif %}
+                    </thead>
+                    <tbody>
+                        {% for p in padron %}
+                            <tr>
+                                {% for k,v in p.items %}
+                                    <td>{{v}}</td>
+                                {% endfor %}
+                                    <td><a href="{% url 'consultas' %}?documento={{p.dni}}"><i class="mdi mdi-account-search i-lg"></i></a></td>
+                            </tr>
+                        {% empty %}
+                            <tr style="line-height: 4rem;">
+                                <td class="text-center">Sin resultados</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 pt-5" id="spinner">
+            <span class="spinner-border" style="width: 6rem; height: 6rem;" role="status" aria-hidden="true"></span>
+        </div>
+
+        {% if 'Beneficiarios' in title %}
+            <div class="text-center">
+                <a href="{% url url %}" class="btn btn-primary mt-4 px-4 py-2"><i class="my-auto mdi mdi-keyboard-backspace"></i>Volver</a>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Plugin JS goes HERE  -->
+{% block plugin_javascripts %}
+
+  <script src="/static/assets/vendors/chart.js/Chart.min.js"></script>
+  <script src="/static/assets/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="/static/assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/static/assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="/static/assets/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+  <script src="/static/assets/plugins/data-tables/js/datatables.min.js"></script>
+
+
+{% endblock plugin_javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="/static/assets/js/dashboard.js"></script>
+
+  <script>
+    $(document).ready(function () {
+        {% if padron %}
+            try{
+
+                let cols = {columns: [0,1,2,3,4,5,6,7,8]}
+                $('#padron-table').DataTable({
+                    responsive: true,
+                    autoWidth: false,
+                    dom: '<"row buttons"<"leyend mr-2">B><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    buttons: [
+                        {
+                            extend: 'csvHtml5',
+                            exportOptions:cols
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            exportOptions:cols
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            exportOptions:cols
+                        },
+                        'colvis'
+                    ],
+                    language: {
+                        search:         "Buscar:",
+                        lengthMenu:     "Mostrar beneficiarios _MENU_",
+                        zeroRecords:    "Sin coincidencias...",
+                        searchPlaceholder: "Escribe algo...",
+                        info:           "Mostrando _END_ de _TOTAL_ beneficiarios",
+                        paginate: {
+                            previous:   '<i class="fa-solid fa-angle-left"></i>',
+                            next:       '<i class="fa-solid fa-angle-right"></i>',
+                        }
+                    },
+                    "columnDefs":[{"targets":[5], "className":"direccion-sm"}],
+                    initComplete: function(settings, json) {
+                        $('.leyend').html('Exportar tabla:')
+                        $('#spinner').hide();
+                        $('.table-js').show();
+                    }
+                });
+            }
+            catch(err){
+                $('#spinner').hide();
+                $('.table-js').show();
+            }
+        {% else %}
+            $('#spinner').hide();
+            $('.table-js').show();
+        {% endif %}
+
+        // Validacion para navegador Firefox
+        // Input month no soportado
+        var isFirefox = typeof InstallTrigger !== 'undefined';
+        if(isFirefox){
+            $('.input-mes').focusin(function (){
+                this.type = 'date'
+            })
+        }
+        else{
+            $('.input-mes').focusin(function (){
+                this.type = 'month'
+            })
+            $('.input-mes').focusout(function (){
+                !this.value ? this.type = 'text' : this.type = 'month'
+            })
+        }
+    });
+  </script>
+
+{% endblock javascripts %}

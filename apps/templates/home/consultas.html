@@ -1,0 +1,62 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{title}} {% endblock %}
+
+<!-- Specific Plugin CSS goes HERE -->
+{% block plugin_stylesheets %}{% endblock plugin_stylesheets %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="content-wrapper">
+
+        <div class="page-header">
+            <div class="d-block d-md-flex justify-content-between flex-1">
+                <h2 class="page-title text-center my-2 my-md-auto"> {{title}} </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Consultas</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <h1 class="text-center"> {{title}}: </h1>
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if agente %}
+                <input class="form-control" type="number" name="documento" placeholder="Documento" required value="{{documento}}">
+            {% else %}
+                <input readonly class="form-control bg-dark" type="number" name="documento" placeholder="Documento" required value="{{documento}}">
+            {% endif %}
+
+            <div class="my-5">
+                <div class="form-row justify-content-around">
+                    <input class="form-control col-10 col-sm-3 my-2" type="submit" value="Consumo mes actual" name="0">
+                    <input class="form-control col-10 col-sm-3 my-2" type="submit" value="Consumo mes anterior" name="1">
+                    <input class="form-control col-10 col-sm-3 my-2" type="submit" value="Consumo últimos dos meses" name="2">
+                </div>
+                <div class="form-row justify-content-around">
+                    <input class="form-control col-10 col-sm-3 my-2" type="submit" value="Asignación" name="3">
+                    <input class="form-control col-10 col-sm-3 my-2" type="submit" value="Descarga" name="4">
+                    <input class="form-control col-10 col-sm-3 my-2" type="submit" value="Saldo" name="5">
+                </div>
+            </div>
+        </form>
+
+        <div class="text-center">
+            <a href="/" class="btn btn-primary mt-4 px-4 py-2"><i class="my-auto mdi mdi-keyboard-backspace"></i>Inicio</a>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Plugin JS goes HERE  -->
+{% block plugin_javascripts %}{% endblock plugin_javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
